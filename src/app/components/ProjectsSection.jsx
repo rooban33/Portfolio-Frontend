@@ -38,32 +38,15 @@ const ProjectsSection = () => {
       <h2 className="text-center text-4xl font-bold text-white mt-4 mb-8 md:mb-12">
         My Projects
       </h2>
-      <div className="text-white flex flex-row justify-center items-center gap-2 py-6">
-        <ProjectTag
-          onClick={handleTagChange}
-          name="All"
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="Web development"
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="Flask"
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="Computer Vision"
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="Java"
-        />
-        <ProjectTag
-          onClick={handleTagChange}
-          name="ML"
-        />
-      </div>
+      <div className="text-white flex flex-row justify-center items-center gap-2 py-6 responsive-tags">
+  <ProjectTag onClick={handleTagChange} name="All" />
+  <ProjectTag onClick={handleTagChange} name="Web development" />
+  <ProjectTag onClick={handleTagChange} name="Flask" />
+  <ProjectTag onClick={handleTagChange} name="Computer Vision" />
+  <ProjectTag onClick={handleTagChange} name="Java" />
+  <ProjectTag onClick={handleTagChange} name="ML" />
+</div>
+
       <ul ref={ref} className="grid md:grid-cols-3 gap-8 md:gap-12">
         {projects.map((project, index) => (
           <motion.li

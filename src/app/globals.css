@@ -35,3 +35,15 @@ body {
 .image-item {
   list-style: none;
 }
+
+.responsive-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .responsive-tags {
+    flex-direction: column;
+    align-items: center;
+  }
+}
