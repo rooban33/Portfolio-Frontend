@@ -35,7 +35,7 @@ const HeroSection = () => {
             />
           </h1>
           <p className="text-[#ADB7BE] text-base sm:text-lg mb-6 lg:text-xl">
-          MSc Software System student deeply passionate about software development.
+          Enthusiastic MSc Software Systems student 🌟 weaving innovation into the fabric of software development. 💻✨
           </p>
           <div>
             <Link

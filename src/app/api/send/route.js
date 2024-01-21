@@ -1,8 +1,7 @@
-// import { EmailTemplate } from '../../../components/EmailTemplate';
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend("re_jFYWF4Uk_6cHEDwrukaV5WpHMdJPHDAT2");
+const resend = new Resend("re_8aytQzHm_89nM4ZWS2NVZpneDYSBsq6UB");
 const fromEmail = process.env.FROM_EMAIL;
 
 export async function POST(req, res) {
@@ -10,8 +9,8 @@ export async function POST(req, res) {
   console.log(email, subject, message);
   try {
     const data = await resend.emails.send({
-      from: fromEmail,
-      to: [fromEmail, email],
+      from: email, // Specify the sender's email address
+      to: ['shajithgunasekaran@gmail.com'],
       subject: subject,
       react: (
         <>
@@ -24,6 +23,7 @@ export async function POST(req, res) {
     });
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json({ error });
+    console.error('Error sending email:', error);
+    return NextResponse.json({ error: 'Error sending email' });
   }
 }

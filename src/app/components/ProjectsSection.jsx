@@ -17,7 +17,7 @@ const ProjectsSection = () => {
 
   const fetchProjectsByTag = async (selectedTag) => {
     try {
-      const response = await axios.get(`http://localhost:3001/projects?tag=${selectedTag}`);
+      const response = await axios.get(`https://portfolio-backend-two-brown.vercel.app/projects?tag=${selectedTag}`);
       setProjects(response.data.projects);
     } catch (error) {
       console.error('Error fetching projects:', error);
