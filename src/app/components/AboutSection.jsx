@@ -17,7 +17,7 @@ const TAB_DATA = [
         <Image src="/images/cpp1.png" className="image-item" width={80} height={80} />
         <Image src="/images/java.png" className="image-item" width={80} height={80} />
         <Image src="/images/python.png" className="image-item" width={80} height={80} />
-        <Image src="/images/node.avif" className="image-item" width={80} height={80} />
+        <Image src="/images/node.png" className="image-item" width={80} height={80} />
         <Image src="/images/mysql.png" className="image-item" width={80} height={80} />
       </div>
     ),
