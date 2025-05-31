@@ -24,9 +24,9 @@ const HeroSection = () => {
               sequence={[
                 "Shajithrooban",
                 1000,
-                "Fullstack Developer",
+                " an Fullstack Developer",
                 1000,
-                "Software Engineer",
+                "an Software Enthusiast",
                 1000,
               ]}
               wrapper="span"
@@ -42,7 +42,7 @@ const HeroSection = () => {
               href="#contact"
               className="px-6 inline-block py-3 w-full sm:w-fit rounded-full mr-4 bg-gradient-to-br from-primary-500 to-secondary-500 hover:bg-slate-200 text-white"
             >
-              Hire Me
+              Contact Me
             </Link>
             <Link
               href="https://drive.google.com/drive/u/1/folders/11Z2M6wCNsCNEGDvufZVNNIfbXKKI4YCs" target="_blank"
