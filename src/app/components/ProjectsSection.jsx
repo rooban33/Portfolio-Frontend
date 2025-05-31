@@ -122,7 +122,8 @@ const ProjectsSection = () => {
 
   return (
     <section id="projects">
-      <h2 className="text-center text-4xl font-bold text-white mt-4 mb-8 md:mb-12">
+      <h2 className="text-center text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent" 
+      style={{"paddingBottom":"3rem"}}>
         My Projects
       </h2>
       <div className="text-white flex flex-row justify-center items-center gap-2 py-6 responsive-tags">
