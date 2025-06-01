@@ -39,7 +39,7 @@ export default function SystemMonitorPage() {
   const DOWNLOAD_LINK = "https://drive.google.com/drive/folders/12ds5xAbM9rZxBCGC_OlFfWgd_yLsXCO4?usp=drive_link";
   
   // Replace with your Google Apps Script Web App URL
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzRTDZttN5ivlU1LBvD64bu1VpfQl1iZ_hCH0YngsjvHtn3T620j7q-RwWqACgvaQRa/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrBvwpzpJicMLNJECjhQfM1X9mT1AHyD4A4Sp50yXEc3-TuU05vhtq-2rSMN39pYU/exec";
 
   // Validation functions
   const validateName = (name) => {
@@ -147,7 +147,6 @@ export default function SystemMonitorPage() {
       });
 
       console.log('Form submitted successfully:', submissionData);
-      window.open(DOWNLOAD_LINK, '_blank');
       
       // Simulate processing time for better UX
       setTimeout(() => {
