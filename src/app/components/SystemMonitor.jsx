@@ -549,7 +549,7 @@ export default function SystemMonitorPage() {
                   </form>
 
                   <p className="text-xs text-gray-500 text-center mt-4">
-                    By downloading, you agree to provide feedback to help us improve the application. 
+                    By downloading, you agree to provide feedback to help us improve the application.While using the delete option please check twice before moving forward as AI can make mistakes. 
                     Your information will be used only for product updates and support.
                   </p>
                 </div>
