@@ -17,6 +17,16 @@ const ProjectsSection = () => {
 
   const cards = [
     {
+      id: 9,
+      imgUrl: "/images/chart.png",
+      title: "System Monitor",
+      description:
+        " A Windows-only desktop app using React.js and Electron to monitor in real-time with chart visualization and smart storage management using AI",
+      gitUrl: "https://shajithrooban.netlify.app/system-monitor",
+      previewUrl: "https://shajithrooban.netlify.app/system-monitor",
+      tag: ["Web Development"]
+    },    
+    {
       id: 1,
       imgUrl: "/images/gesture.png",
       title: "Game Control Using Gesture",
@@ -35,6 +45,26 @@ const ProjectsSection = () => {
       gitUrl: "https://github.com/rooban33/Network-Scanner",
       previewUrl: "https://www.linkedin.com/posts/shajith-rooban-b26453221_networkscanner-innovation-filesharing-activity-7139493293515567104-LnLW?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADfF744BOKK7gIKhvHZqkGzeqUQmdAeqyzM",
       tag: ["Flask", "Web development"]
+    },
+    {
+      id: 2,
+      imgUrl: "/images/sih.png",
+      title: "Crowd Management & Trespassing prevention in railwaystation",
+      description:
+        "A real-time CCTV monitoring system using SSD to track movement, detect trespassing, and trigger alerts with email notifications.",
+      gitUrl: "https://www.linkedin.com/posts/shajith-rooban-b26453221_using-existing-cctv-network-for-crowd-management-activity-7151993763886780416-OSCa?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADfF744BOKK7gIKhvHZqkGzeqUQmdAeqyzM",
+      previewUrl: "https://www.youtube.com/watch?v=VjY5MxOI7rw",
+      tag: ["Computer Vision", "ML"]
+    },
+    {
+      id: 7,
+      imgUrl: "/images/quicksense.png",
+      title: "Quick Sense",
+      description:
+        "QuickSense is a Chrome extension built with HTML, CSS, Bootstrap, JavaScript, and JSON for instant word definitions.",
+      gitUrl: "https://github.com/fosscit/Quick-sense",
+      previewUrl: "https://www.linkedin.com/posts/shajith-rooban-b26453221_opensource-hacktoberfest-techinnovation-activity-7126980467878232064-S5BS?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADfF744BOKK7gIKhvHZqkGzeqUQmdAeqyzM",
+      tag: ["Web development"]
     },
     {
       id: 8,
@@ -76,26 +106,7 @@ const ProjectsSection = () => {
       previewUrl: "https://fmvault.netlify.app/",
       tag: ["Web development"]
     },
-    {
-      id: 7,
-      imgUrl: "/images/quicksense.png",
-      title: "Quick Sense",
-      description:
-        "QuickSense is a Chrome extension built with HTML, CSS, Bootstrap, JavaScript, and JSON for instant word definitions.",
-      gitUrl: "https://github.com/fosscit/Quick-sense",
-      previewUrl: "https://www.linkedin.com/posts/shajith-rooban-b26453221_opensource-hacktoberfest-techinnovation-activity-7126980467878232064-S5BS?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADfF744BOKK7gIKhvHZqkGzeqUQmdAeqyzM",
-      tag: ["Web development"]
-    },
-    {
-      id: 2,
-      imgUrl: "/images/sih.png",
-      title: "Crowd Management & Trespassing prevention in railwaystation",
-      description:
-        "A real-time CCTV monitoring system using SSD to track movement, detect trespassing, and trigger alerts with email notifications.",
-      gitUrl: "https://www.linkedin.com/posts/shajith-rooban-b26453221_using-existing-cctv-network-for-crowd-management-activity-7151993763886780416-OSCa?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADfF744BOKK7gIKhvHZqkGzeqUQmdAeqyzM",
-      previewUrl: "https://www.youtube.com/watch?v=VjY5MxOI7rw",
-      tag: ["Computer Vision", "ML"]
-    }
+    
   ];
 
   const fetchProjectsByTag = async (selectedTag) => {

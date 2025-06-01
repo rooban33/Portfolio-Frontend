@@ -18,69 +18,159 @@ import {
   Shield,
   Users,
   Mail,
+  User,
+  Phone,
   X,
   CheckCircle
 } from 'lucide-react';
 
 export default function SystemMonitorPage() {
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [email, setEmail] = useState('');
-  const [isValidEmail, setIsValidEmail] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    whatsapp: ''
+  });
+  const [validationErrors, setValidationErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   // Replace this with your actual Google Drive link
-  const DOWNLOAD_LINK = "https://drive.google.com/file/d/YOUR_FILE_ID/view?usp=sharing";
+  const DOWNLOAD_LINK = "https://drive.google.com/drive/folders/12ds5xAbM9rZxBCGC_OlFfWgd_yLsXCO4?usp=drive_link";
+  
+  // Replace with your Google Apps Script Web App URL
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzRTDZttN5ivlU1LBvD64bu1VpfQl1iZ_hCH0YngsjvHtn3T620j7q-RwWqACgvaQRa/exec";
 
-  // Email validation function
+  // Validation functions
+  const validateName = (name) => {
+    return name.trim().length >= 2;
+  };
+
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Handle email input change
-  const handleEmailChange = (e) => {
-    const emailValue = e.target.value;
-    setEmail(emailValue);
-    setIsValidEmail(validateEmail(emailValue));
+  const validateWhatsApp = (phone) => {
+    // Remove all non-digits
+    const cleaned = phone.replace(/\D/g, '');
+    // Check if it's 10-15 digits (common range for international numbers)
+    return cleaned.length >= 10 && cleaned.length <= 15;
+  };
+
+  // Handle form input changes
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+
+    // Real-time validation
+    const errors = { ...validationErrors };
+    
+    switch (field) {
+      case 'name':
+        if (validateName(value)) {
+          delete errors.name;
+        } else {
+          errors.name = 'Name must be at least 2 characters long';
+        }
+        break;
+      case 'email':
+        if (validateEmail(value)) {
+          delete errors.email;
+        } else {
+          errors.email = 'Please enter a valid email address';
+        }
+        break;
+      case 'whatsapp':
+        if (validateWhatsApp(value)) {
+          delete errors.whatsapp;
+        } else {
+          errors.whatsapp = 'Please enter a valid WhatsApp number (10-15 digits)';
+        }
+        break;
+    }
+    
+    setValidationErrors(errors);
+  };
+
+  // Format WhatsApp number for display
+  const formatWhatsAppNumber = (value) => {
+    // Remove all non-digits
+    const cleaned = value.replace(/\D/g, '');
+    // Format as: +1 (234) 567-8901 for US numbers, or just add + for international
+    if (cleaned.length === 10) {
+      return `+1 (${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+    } else if (cleaned.length > 10) {
+      return `+${cleaned}`;
+    }
+    return cleaned;
+  };
+
+  // Check if form is valid
+  const isFormValid = () => {
+    return validateName(formData.name) && 
+           validateEmail(formData.email) && 
+           validateWhatsApp(formData.whatsapp) &&
+           Object.keys(validationErrors).length === 0;
   };
 
   // Handle download process
   const handleDownload = async (e) => {
     e.preventDefault();
-    if (!email || !isValidEmail) return;
+    if (!isFormValid()) return;
 
     setIsSubmitting(true);
     
-    // Log email to console (you can see this in browser dev tools)
-    console.log('Download request from:', email);
-    console.log('Timestamp:', new Date().toISOString());
-    
-    // Optional: Store in localStorage for your reference
-    const downloadRequests = JSON.parse(localStorage.getItem('downloadRequests') || '[]');
-    downloadRequests.push({
-      email,
-      project: 'system-monitor',
-      timestamp: new Date().toISOString()
-    });
-    localStorage.setItem('downloadRequests', JSON.stringify(downloadRequests));
+    try {
+      // Prepare data for Google Sheets
+      const submissionData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        whatsapp: formData.whatsapp.replace(/\D/g, ''), // Store only digits
+        whatsapp_formatted: formatWhatsAppNumber(formData.whatsapp),
+        project: 'system-monitor',
+        timestamp: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || 'direct'
+      };
 
-    // Simulate processing time
-    setTimeout(() => {
-      setSubmitted(true);
-      setIsSubmitting(false);
+      // Send to Google Apps Script
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Required for Google Apps Script
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
+      });
+
+      console.log('Form submitted successfully:', submissionData);
       
-      // Redirect to Google Drive link
-      window.open(DOWNLOAD_LINK, '_blank');
-      
-      // Close modal after 3 seconds
+      // Simulate processing time for better UX
       setTimeout(() => {
-        setShowDownloadModal(false);
-        setSubmitted(false);
-        setEmail('');
-        setIsValidEmail(false);
-      }, 3000);
-    }, 1000);
+        setSubmitted(true);
+        setIsSubmitting(false);
+        
+        // Redirect to Google Drive link
+        window.open(DOWNLOAD_LINK, '_blank');
+        
+        // Close modal after 4 seconds
+        setTimeout(() => {
+          setShowDownloadModal(false);
+          setSubmitted(false);
+          setFormData({ name: '', email: '', whatsapp: '' });
+          setValidationErrors({});
+        }, 4000);
+      }, 1500);
+
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setIsSubmitting(false);
+      // Still allow download even if logging fails
+      window.open(DOWNLOAD_LINK, '_blank');
+    }
   };
 
   const features = [
@@ -155,15 +245,9 @@ export default function SystemMonitorPage() {
             </p>
 
             <div className="flex items-center justify-center gap-6 mb-8">
-              <div className="flex items-center gap-2 text-yellow-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-current" />
-                ))}
-                <span className="text-white ml-2">Performance Tool</span>
-              </div>
               <div className="flex items-center gap-2 text-purple-400">
                 <Users className="w-5 h-5" />
-                <span className="text-white">Desktop Application</span>
+                <span className="text-white">Windows Application</span>
               </div>
             </div>
 
@@ -180,7 +264,7 @@ export default function SystemMonitorPage() {
         </motion.div>
 
         {/* Hero Screenshot */}
-        <motion.div 
+        {/* <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -197,7 +281,7 @@ export default function SystemMonitorPage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl" />
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Features Grid */}
         <div className="container mx-auto px-6 py-16">
@@ -244,9 +328,9 @@ export default function SystemMonitorPage() {
             >
               <div className="relative rounded-xl overflow-hidden">
                 <Image
-                  src="/images/about.jpeg" // Add storage management screenshot
+                  src="/images/storage.png" // Add storage management screenshot
                   alt="Storage Management Interface"
-                  width={600}
+                  width={300}
                   height={400}
                   className="w-full"
                 />
@@ -257,9 +341,9 @@ export default function SystemMonitorPage() {
               
               <div className="relative rounded-xl overflow-hidden">
                 <Image
-                  src="/images/about.jpeg" // Add chatbot screenshot
+                  src="/images/chat.png" // Add chatbot screenshot
                   alt="AI Performance Assistant"
-                  width={600}
+                  width={300}
                   height={400}
                   className="w-full"
                 />
@@ -276,9 +360,9 @@ export default function SystemMonitorPage() {
             >
               <div className="relative rounded-xl overflow-hidden">
                 <Image
-                  src="/images/about.jpeg" // Add performance charts screenshot
+                  src="/images/chart.png" // Add performance charts screenshot
                   alt="Real-time Performance Charts"
-                  width={600}
+                  width={300}
                   height={400}
                   className="w-full"
                 />
@@ -337,24 +421,24 @@ export default function SystemMonitorPage() {
           </div>
         </div>
 
-        {/* Download Modal */}
+        {/* Enhanced Download Modal */}
         {showDownloadModal && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl p-8 max-w-md w-full relative"
+              className="bg-white rounded-2xl p-8 max-w-lg w-full relative max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setShowDownloadModal(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
               >
                 <X className="w-6 h-6" />
               </button>
 
               {!submitted ? (
                 <div>
-                  <div className="text-center mb-6">
+                  <div className="text-center mb-8">
                     <Download className="w-12 h-12 text-purple-600 mx-auto mb-4" />
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Download Trial Version</h3>
                     <p className="text-gray-600">
@@ -362,57 +446,127 @@ export default function SystemMonitorPage() {
                     </p>
                   </div>
 
-                  <form onSubmit={handleDownload}>
-                    <div className="mb-6">
+                  <form onSubmit={handleDownload} className="space-y-6">
+                    {/* Name Field */}
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
+                        Full Name *
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="text"
+                          style={{"color":"black"}}
+                          value={formData.name}
+                          onChange={(e) => handleInputChange('name', e.target.value)}
+                          required
+                          className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                            validationErrors.name ? 'border-red-300 bg-red-50' : 
+                            formData.name && !validationErrors.name ? 'border-green-300 bg-green-50' : 
+                            'border-gray-300'
+                          }`}
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+                      {validationErrors.name && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.name}</p>
+                      )}
+                    </div>
+
+                    {/* Email Field */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
                           type="email"
-                          value={email}
-                          onChange={handleEmailChange}
+                          style={{"color":"black"}}
+                          value={formData.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
                           required
                           className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
-                            email && !isValidEmail ? 'border-red-300 bg-red-50' : 
-                            email && isValidEmail ? 'border-green-300 bg-green-50' : 
+                            validationErrors.email ? 'border-red-300 bg-red-50' : 
+                            formData.email && !validationErrors.email ? 'border-green-300 bg-green-50' : 
                             'border-gray-300'
                           }`}
                           placeholder="your@email.com"
                         />
                       </div>
-                      {email && !isValidEmail && (
-                        <p className="text-red-500 text-sm mt-1">Please enter a valid email address</p>
+                      {validationErrors.email && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.email}</p>
                       )}
-                      {email && isValidEmail && (
-                        <p className="text-green-500 text-sm mt-1">Email looks good!</p>
+                    </div>
+
+                    {/* WhatsApp Field */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        WhatsApp Number *
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="tel"
+                          style={{"color":"black"}}
+                          value={formData.whatsapp}
+                          onChange={(e) => handleInputChange('whatsapp', e.target.value)}
+                          required
+                          className={`w-full pl-12 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors ${
+                            validationErrors.whatsapp ? 'border-red-300 bg-red-50' : 
+                            formData.whatsapp && !validationErrors.whatsapp ? 'border-green-300 bg-green-50' : 
+                            'border-gray-300'
+                          }`}
+                          placeholder="+1 234 567 8900"
+                        />
+                      </div>
+                      {validationErrors.whatsapp && (
+                        <p className="text-red-500 text-sm mt-1">{validationErrors.whatsapp}</p>
                       )}
+                      <p className="text-gray-500 text-sm mt-1">
+                        Include country code (e.g., +1 for US, +91 for India)
+                      </p>
                     </div>
 
                     <button
                       type="submit"
-                      disabled={isSubmitting || !isValidEmail || !email}
+                      disabled={isSubmitting || !isFormValid()}
                       className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
-                        isValidEmail && email
+                        isFormValid()
                           ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:shadow-lg'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                     >
-                      {isSubmitting ? 'Processing...' : 'Download Now'}
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Processing...
+                        </div>
+                      ) : (
+                        'Download Now'
+                      )}
                     </button>
                   </form>
 
                   <p className="text-xs text-gray-500 text-center mt-4">
-                    By downloading, you agree to provide feedback to help us improve the application.
+                    By downloading, you agree to provide feedback to help us improve the application. 
+                    Your information will be used only for product updates and support.
                   </p>
                 </div>
               ) : (
-                <div className="text-center">
+                <div className="text-center py-8">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Download Started!</h3>
-                  <p className="text-gray-600">
-                    Thank you! Your download should begin shortly. We'd love to hear your feedback!
+                  <p className="text-gray-600 mb-4">
+                    Thank you, {formData.name}! Your download should begin shortly.
+                  </p>
+                  <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-600">
+                    <p className="mb-2">We'll contact you at:</p>
+                    <p>📧 {formData.email}</p>
+                    <p>📱 {formatWhatsAppNumber(formData.whatsapp)}</p>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-4">
+                    We'd love to hear your feedback and can't wait to show you what's coming next!
                   </p>
                 </div>
               )}
