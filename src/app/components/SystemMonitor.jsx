@@ -147,6 +147,7 @@ export default function SystemMonitorPage() {
       });
 
       console.log('Form submitted successfully:', submissionData);
+      window.open(DOWNLOAD_LINK, '_blank');
       
       // Simulate processing time for better UX
       setTimeout(() => {
