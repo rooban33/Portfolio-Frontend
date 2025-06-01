@@ -77,7 +77,7 @@ const AboutSection = () => {
           <h2 className="text-4xl font-bold text-white mb-4">About Me</h2>
           <p className="text-base lg:text-lg">
             
-Howdy🤠! I'm Shajithrooban, a versatile software developer based in Coimbatore. Proficient in C, C++, Python, React, Nodejs, and more, I actively contribute to diverse technology initiatives. As a valuable member of the Research Assistant team at the Coimbatore Institute of Technology, I played a key role in developing an innovative student performance analysis fuzzy model, which earned recognition at the I-SMAC conference in Nepal. In my position as the Head of the Technical Team at the FOSS-CIT, I drive meaningful contributions to the open-source community through events like Hacktoberfest. Explore my portfolio to witness my commitment to impactful technology solutions. Let's connect and innovate!</p>
+          Howdy🤠! I'm Shajithrooban, a software developer based in Coimbatore with experience in C, C++, Python, React, Node.js, and more. I’ve worked on a range of projects involving frontend development, system optimization, and smart tech solutions. As a Data and AI Consultant at Thorogood Associates, I contributed to a major migration project and enhanced frontend performance using Angular. At Sayvai, I improved UI/UX and streamlined frontend workflows. I’ve led website and tech teams for events like Melinia and FOSS-CIT, managing deployments, payment systems, and open-source activities. Take a look at my portfolio to see how I build useful and thoughtful tech. Let’s connect!</p>
           <div className="flex flex-row justify-start mt-8">
             <TabButton
               selectTab={() => handleTabChange("skills")}

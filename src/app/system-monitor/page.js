@@ -1,35 +1,26 @@
-"use client";
+"use client"
+import Footer from "../components/Footer";
+import SystemMonitor from "../components/SystemMonitor"; // Replace with your actual component name
 import Link from "next/link";
 import React, { useState } from "react";
-import NavLink from "./NavLink";
+import NavLink from "../components/NavLink";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import MenuOverlay from "./MenuOverlay";
+import MenuOverlay from "../components/MenuOverlay";
 import Image from "next/image";
 
 const navLinks = [
   {
-    title: "About",
-    path: "#about",
-  },
-  {
-    title: "Projects",
-    path: "/projects",
-  },
-  {
-    title: "Contact",
-    path: "/contact",
-  },
-  // {
-  //   title:"System Monitor",
-  //   path:"/system-monitor"
-  // }
+    title: "Home",
+    path: "/",
+  }
 ];
 
-const Navbar = () => {
+export default function SystemMonitorPage() {
   const [navbarOpen, setNavbarOpen] = useState(false);
-
+  
   return (
-    <nav className="fixed mx-auto border border-[#521e46] top-0 left-0 right-0 z-10 bg-[#121212] bg-opacity-100 px-5">
+    <main className="flex min-h-screen flex-col bg-[#121212]">
+      <nav className="fixed mx-auto border border-[#521e46] top-0 left-0 right-0 z-10 bg-[#121212] bg-opacity-100 px-5">
       <div className="flex container lg:py-4 flex-wrap items-center justify-between mx-auto px-4 py-2 ">
         <Link
           href={"/"}
@@ -66,7 +57,10 @@ const Navbar = () => {
       </div>
       {navbarOpen ? <MenuOverlay links={navLinks} /> : null}
     </nav>
+      <div className="container mt-24 mx-auto px-12 py-4">
+        <SystemMonitor/>
+      </div>
+      <Footer />
+    </main>
   );
-};
-
-export default Navbar;
+}
